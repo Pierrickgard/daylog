@@ -1,0 +1,19 @@
+name: Feature request
+description: Suggest an idea
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: Describe the need, not only the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: What would you like Daylog to do?
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: How do you handle it today?

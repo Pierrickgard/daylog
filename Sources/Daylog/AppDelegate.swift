@@ -19,10 +19,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         registerHotKey()
         _ = quickEntry // load the popup's page now so it opens instantly
 
-        // Launched at login: stay in the background. Launched by hand: show the window.
+        // Launched at login or through a daylog:// link: stay in the background. Launched by hand: show the window.
         let launchedAtLogin = NSAppleEventManager.shared().currentAppleEvent?
             .paramDescriptor(forKeyword: keyAELaunchedAsLogInItem) != nil
-        if !launchedAtLogin { showMainWindow() }
+        if UserDefaults.standard.bool(forKey: "showQuickLogAtLaunch") { // used for the README screenshots
+            openedByURL = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { self.quickEntry.show() }
+        }
+        if !launchedAtLogin {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                if !self.openedByURL { self.showMainWindow() }
+            }
+        }
+    }
+
+    private var openedByURL = false
+
+    /// daylog://quick opens the quick log, daylog://open the main window (handy for Raycast, Alfred, Shortcuts…).
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls where url.scheme == "daylog" {
+            openedByURL = true
+            switch url.host {
+            case "quick": quickEntry.show()
+            case "settings": showSettings()
+            default: showMainWindow()
+            }
+        }
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {

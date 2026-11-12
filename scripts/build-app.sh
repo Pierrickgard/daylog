@@ -3,7 +3,7 @@
 set -e
 cd "$(dirname "$0")/.."
 
-VERSION=${VERSION:-0.2.0}
+VERSION=${VERSION:-0.1.0}
 APP=build/Daylog.app
 
 swift build -c release
@@ -30,6 +30,13 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleVersion</key><string>$VERSION</string>
     <key>LSMinimumSystemVersion</key><string>14.0</string>
         <key>NSHighResolutionCapable</key><true/>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key><string>io.github.daylog</string>
+            <key>CFBundleURLSchemes</key><array><string>daylog</string></array>
+        </dict>
+    </array>
 </dict>
 </plist>
 PLIST

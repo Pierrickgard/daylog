@@ -20,10 +20,11 @@ function render() {
     h('button.chip' + (s === section ? '.on' : ''), { onclick: () => { section = s; render(); $input.focus(); } }, s)));
 
   $input.placeholder = kind === 'daily' ? t('whatDidYouDo') : t('whatToDo');
-  $hints.replaceChildren(
+  $hints.replaceChildren(...[
     h('span', {}, h('kbd', {}, '↵'), ' ', t('hintAdd')),
     kind === 'daily' && qs.sections.length > 1 ? h('span', {}, h('kbd', {}, '⇥'), ' ', t('hintSection')) : null,
-    h('span', {}, h('kbd', {}, 'esc'), ' ', t('hintClose')));
+    h('span', {}, h('kbd', {}, 'esc'), ' ', t('hintClose')),
+  ].filter(Boolean));
 
   requestAnimationFrame(() => call('resizeQuickEntry', { height: $box.offsetHeight }));
 }
