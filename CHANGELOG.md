@@ -13,6 +13,8 @@ All notable changes to this project are documented here. The format follows
 - The bridge only opens http(s) links.
 
 ### Changed
+- Theme setting: System, Light or Dark.
+- New settings icon.
 - History is grouped by month, with the year; older months are collapsed.
 
 ## [0.1.0] - 2026-11-12

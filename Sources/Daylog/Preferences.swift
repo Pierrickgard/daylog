@@ -54,4 +54,10 @@ enum Preferences {
         get { defaults.object(forKey: "lastUpdateCheck") as? Date }
         set { defaults.set(newValue, forKey: "lastUpdateCheck") }
     }
+
+    /// "system", "light" or "dark".
+    static var theme: String {
+        get { defaults.string(forKey: "theme") ?? "system" }
+        set { defaults.set(newValue, forKey: "theme") }
+    }
 }

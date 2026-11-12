@@ -321,6 +321,10 @@ function renderSettings() {
   $main.replaceChildren(h('div.page', {},
     pageHeader(t('settings')),
     h('div.settings', {},
+      setting(t('theme'), t('themeHelp'),
+        h('div.segmented', {}, [['system', t('themeSystem')], ['light', t('themeLight')], ['dark', t('themeDark')]]
+          .map(([id, label]) => h('button' + (state.theme === id ? '.on' : ''),
+            { onclick: async () => { await call('setTheme', { theme: id }); refresh(); } }, label)))),
       setting(t('shortcut'), t('shortcutHelp'),
         [kbd(state.shortcut), shortcutBtn],
         state.shortcutOK ? null : h('p.error', {}, t('shortcutTaken'))),

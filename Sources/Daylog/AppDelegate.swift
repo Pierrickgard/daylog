@@ -11,6 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         bridge.app = self
         NSApp.setActivationPolicy(.regular)
+        applyTheme()
         NSApp.mainMenu = makeMainMenu()
         Store.shared.bootstrap()
         setupStatusItem()
@@ -63,6 +64,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func notifyMainWindow() { mainWindow.refresh() }
+
+    /// Light, dark or the system's: set on the whole app, so windows and web views (prefers-color-scheme) follow.
+    func applyTheme() {
+        switch Preferences.theme {
+        case "light": NSApp.appearance = NSAppearance(named: .aqua)
+        case "dark": NSApp.appearance = NSAppearance(named: .darkAqua)
+        default: NSApp.appearance = nil
+        }
+    }
 
     @objc func quickAdd() { quickEntry.show() }
 

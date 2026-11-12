@@ -76,6 +76,12 @@ final class Bridge: NSObject, WKScriptMessageHandlerWithReply {
             }
             reply(true)
 
+        case "setTheme":
+            let theme = str("theme")
+            Preferences.theme = ["light", "dark"].contains(theme) ? theme : "system"
+            app?.applyTheme()
+            reply(true)
+
         case "dismissWelcome":
             Preferences.welcomeDismissed = true; reply(true)
 
@@ -154,6 +160,7 @@ final class Bridge: NSObject, WKScriptMessageHandlerWithReply {
             "launchAtLogin": SMAppService.mainApp.status == .enabled,
             "welcome": !Preferences.welcomeDismissed,
             "checkForUpdates": Preferences.checkForUpdates,
+            "theme": Preferences.theme,
             "update": updateState(),
         ]
     }
