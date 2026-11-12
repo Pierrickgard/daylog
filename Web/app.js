@@ -287,8 +287,8 @@ function renderSettings() {
 
 document.addEventListener('keydown', (e) => {
   if (!e.metaKey) return;
-  if (e.key === '1') { e.preventDefault(); go('today'); }
-  if (e.key === '2') { e.preventDefault(); go('todo'); }
+  if (e.code === 'Digit1') { e.preventDefault(); go('today'); }
+  if (e.code === 'Digit2') { e.preventDefault(); go('todo'); }
 });
 
 refresh();

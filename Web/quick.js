@@ -56,8 +56,8 @@ async function submit() {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') { e.preventDefault(); call('closeQuickEntry'); }
   else if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); submit(); }
-  else if (e.metaKey && e.key === '1') { e.preventDefault(); setKind('daily'); }
-  else if (e.metaKey && e.key === '2') { e.preventDefault(); setKind('todo'); }
+  else if (e.metaKey && e.code === 'Digit1') { e.preventDefault(); setKind('daily'); }
+  else if (e.metaKey && e.code === 'Digit2') { e.preventDefault(); setKind('todo'); }
   else if (e.key === 'Tab' && kind === 'daily' && qs.sections.length) {
     e.preventDefault();
     const i = qs.sections.indexOf(section);

@@ -137,7 +137,7 @@ final class QuickEntryController: NSObject, NSWindowDelegate {
         }
 
         webView.evaluateJavaScript("window.quickOpen && window.quickOpen()")
-        NSApp.activate(ignoringOtherApps: true)
+        // Non-activating panel: it takes the keyboard without bringing Daylog (and its main window) forward.
         panel.makeKeyAndOrderFront(nil)
         panel.makeFirstResponder(webView)
     }
