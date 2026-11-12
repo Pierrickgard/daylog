@@ -21,7 +21,7 @@ jobs:
           ./scripts/build-app.sh
           ditto -c -k --norsrc --noextattr --keepParent build/Daylog.app build/Daylog.zip
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: Daylog
           path: build/Daylog.zip
