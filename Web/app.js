@@ -46,17 +46,54 @@ function renderSidebar() {
       navItem('today', t('today'), 'today'),
       navItem('todo', t('todo'), 'todo', open || null)),
     h('div.group', {}, t('history')),
-    h('nav.days', {},
-      past.length
-        ? past.map((d) => h('button.nav.day' + (page === 'day:' + d.key ? '.active' : ''),
-            { onclick: () => go('day:' + d.key), title: d.title }, d.short))
-        : h('p.empty-hint', {}, t('noHistory'))),
+    h('nav.days', {}, past.length ? historyByMonth(past) : h('p.empty-hint', {}, t('noHistory'))),
     h('div.sidebar-footer', {},
       h('button.quick-btn', { onclick: () => call('openQuickEntry') },
         h('span', {}, t('quickLog')), kbd(state.shortcut)),
       navItem('template', t('template'), 'template'),
       navItem('settings', t('settings'), 'settings')),
   );
+}
+
+// History grouped by month ("November 2026"). The latest month, and the one holding the open day, start expanded;
+// the rest is remembered per viewer.
+
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const dateOf = (key) => new Date(key + 'T12:00:00');
+const monthLabel = (ym) => capitalize(new Intl.DateTimeFormat(LANG, { month: 'long', year: 'numeric' }).format(dateOf(ym + '-01')));
+const dayLabel = (key) => capitalize(new Intl.DateTimeFormat(LANG, { weekday: 'short', day: 'numeric' }).format(dateOf(key)));
+
+function monthState() {
+  try { return JSON.parse(localStorage.getItem('months') || '{}'); } catch { return {}; }
+}
+
+function historyByMonth(days) {
+  const months = new Map();
+  for (const d of days) {
+    const ym = d.key.slice(0, 7);
+    if (!months.has(ym)) months.set(ym, []);
+    months.get(ym).push(d);
+  }
+  const saved = monthState();
+  const latest = [...months.keys()][0];
+  const current = page.startsWith('day:') ? page.slice(4, 11) : null;
+
+  return [...months].map(([ym, list]) => {
+    const open = ym === current || (saved[ym] ?? ym === latest);
+    const toggle = () => {
+      const next = monthState();
+      next[ym] = !open;
+      try { localStorage.setItem('months', JSON.stringify(next)); } catch {}
+      renderSidebar();
+    };
+    return h('div.month', {},
+      h('button.month-header', { onclick: toggle },
+        h('span.caret' + (open ? '.open' : ''), { html: ICONS.caret }),
+        h('span.label', {}, monthLabel(ym)),
+        h('span.month-count', {}, list.length)),
+      open ? list.map((d) => h('button.nav.day' + (page === 'day:' + d.key ? '.active' : ''),
+        { onclick: () => go('day:' + d.key), title: d.title }, dayLabel(d.key))) : null);
+  });
 }
 
 // ---------- Pages ----------

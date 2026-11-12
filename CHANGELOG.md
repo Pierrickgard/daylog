@@ -5,6 +5,9 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+- History is grouped by month, with the year; older months are collapsed.
+
 ## [0.1.0] - 2026-11-12
 
 First public release.
