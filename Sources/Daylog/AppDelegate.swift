@@ -87,7 +87,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        statusItem.button?.image = NSImage(systemSymbolName: "square.and.pencil", accessibilityDescription: "Daylog")
+        statusItem.button?.image = Self.menuBarIcon()
 
         let menu = NSMenu()
         quickEntryItem = menu.addItem(withTitle: "", action: #selector(quickAdd), keyEquivalent: "")
@@ -98,6 +98,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         for item in menu.items where item.action != #selector(NSApplication.terminate(_:)) { item.target = self }
         statusItem.menu = menu
         registerHotKey()
+    }
+
+    /// The app icon's checklist, as a monochrome template image that adapts to the menu bar.
+    static func menuBarIcon() -> NSImage {
+        let image = NSImage(size: NSSize(width: 18, height: 18), flipped: true) { _ in
+            NSColor.black.set()
+            // checked box
+            let box = NSBezierPath(roundedRect: NSRect(x: 1.5, y: 2, width: 5, height: 5), xRadius: 1.4, yRadius: 1.4)
+            box.fill()
+            let check = NSBezierPath()
+            check.move(to: NSPoint(x: 2.7, y: 4.6))
+            check.line(to: NSPoint(x: 3.7, y: 5.6))
+            check.line(to: NSPoint(x: 5.4, y: 3.3))
+            check.lineWidth = 1.1
+            check.lineCapStyle = .round
+            check.lineJoinStyle = .round
+            NSGraphicsContext.current?.compositingOperation = .clear
+            check.stroke()
+            NSGraphicsContext.current?.compositingOperation = .sourceOver
+            // bullets
+            NSBezierPath(ovalIn: NSRect(x: 2.5, y: 8, width: 3, height: 3)).fill()
+            NSBezierPath(ovalIn: NSRect(x: 2.5, y: 13, width: 3, height: 3)).fill()
+            // lines, shorter as they go down
+            for (y, width) in [(3.6, 8.0), (8.6, 9.5), (13.6, 6.5)] as [(CGFloat, CGFloat)] {
+                NSBezierPath(roundedRect: NSRect(x: 8, y: y, width: width, height: 1.8), xRadius: 0.9, yRadius: 0.9).fill()
+            }
+            return true
+        }
+        image.isTemplate = true
+        image.accessibilityDescription = "Daylog"
+        return image
     }
 
     private func makeMainMenu() -> NSMenu {
