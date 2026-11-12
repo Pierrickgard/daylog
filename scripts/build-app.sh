@@ -3,7 +3,7 @@
 set -e
 cd "$(dirname "$0")/.."
 
-VERSION=0.1.0
+VERSION=${VERSION:-0.2.0}
 APP=build/Daylog.app
 
 swift build -c release
@@ -14,6 +14,7 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp .build/release/Daylog "$APP/Contents/MacOS/Daylog"
 cp build/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
+cp -R Web "$APP/Contents/Resources/web"
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -28,12 +29,12 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleShortVersionString</key><string>$VERSION</string>
     <key>CFBundleVersion</key><string>$VERSION</string>
     <key>LSMinimumSystemVersion</key><string>14.0</string>
-    <key>LSUIElement</key><true/>
-    <key>NSHighResolutionCapable</key><true/>
+        <key>NSHighResolutionCapable</key><true/>
 </dict>
 </plist>
 PLIST
-codesign --force --sign - "$APP"
+# A fixed designated requirement keeps macOS privacy permissions (e.g. Documents access) across rebuilds.
+codesign --force --sign - -r '=designated => identifier "io.github.daylog"' "$APP"
 echo "Built $APP"
 
 if [ "$1" = "install" ]; then

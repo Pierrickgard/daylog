@@ -55,7 +55,7 @@ final class HotKey {
         if f.contains(.shift) { s += "⇧" }
         if f.contains(.command) { s += "⌘" }
         switch Int(event.keyCode) {
-        case kVK_Space: s += "Espace"
+        case kVK_Space: s += L10n.t("Space", "Espace")
         case kVK_Return: s += "↩"
         case kVK_Tab: s += "⇥"
         default: s += (event.charactersIgnoringModifiers ?? "?").uppercased()

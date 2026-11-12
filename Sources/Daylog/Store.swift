@@ -8,29 +8,36 @@ import Foundation
 ///
 /// The `## ` headings of the template are the sections offered by the quick entry.
 struct TodoItem: Identifiable, Equatable {
-    let id = UUID()
+    let id = UUID().uuidString
     var text: String
     var done: Bool
 }
 
-final class Store: ObservableObject {
+final class Store {
     static let shared = Store()
 
-    @Published private(set) var dayKeys: [String] = []
-    @Published private(set) var todos: [TodoItem] = []
-    /// Bumped whenever files change from outside an editor (quick entry, reload).
-    @Published private(set) var revision = 0
+    private(set) var dayKeys: [String] = []
+    private(set) var todos: [TodoItem] = []
 
-    static let defaultTemplate = """
-    # Daily — {{date}}
+    static let defaultTemplate = L10n.t("""
+    # {{date}}
+
+    ## Work
+
+    ## Meetings
+
+    ## Other
+
+    """, """
+    # {{date}}
 
     ## Travail
 
-    ## Perso
+    ## Réunions
 
     ## Divers
 
-    """
+    """)
 
     private let fm = FileManager.default
 
@@ -41,10 +48,10 @@ final class Store: ObservableObject {
         return f
     }()
 
-    private func formatter(_ format: String) -> DateFormatter {
+    private func formatter(_ template: String) -> DateFormatter {
         let f = DateFormatter()
-        f.locale = Locale(identifier: "fr_FR")
-        f.dateFormat = format
+        f.locale = L10n.locale
+        f.setLocalizedDateFormatFromTemplate(template)
         return f
     }
 
@@ -73,7 +80,6 @@ final class Store: ObservableObject {
     func reload() {
         reloadDays()
         todos = Self.parseTodos(read(todoURL))
-        revision += 1
     }
 
     private func reloadDays() {
@@ -93,22 +99,22 @@ final class Store: ObservableObject {
         let isNewDay = url.deletingLastPathComponent().standardizedFileURL == dailyFolder.standardizedFileURL
             && !fm.fileExists(atPath: url.path)
         try? text.write(to: url, atomically: true, encoding: .utf8)
-        if isNewDay { DispatchQueue.main.async { self.reloadDays() } }
+        if isNewDay { reloadDays() }
     }
 
     // MARK: Days
 
-    /// "Jeudi 12 novembre 2026"
+    /// "Thursday, November 12, 2026" / "Jeudi 12 novembre 2026"
     func title(for key: String) -> String {
         guard let date = keyFormatter.date(from: key) else { return key }
-        return formatter("EEEE d MMMM yyyy").string(from: date).capitalizedFirst
+        return formatter("EEEEdMMMMyyyy").string(from: date).capitalizedFirst
     }
 
-    /// "Jeu. 12 nov." (year added when it is not the current one)
+    /// "Thu, Nov 12" / "Jeu. 12 nov." (year added when it is not the current one)
     func shortTitle(for key: String) -> String {
         guard let date = keyFormatter.date(from: key) else { return key }
         let sameYear = Calendar.current.isDate(date, equalTo: Date(), toGranularity: .year)
-        return formatter(sameYear ? "EEE d MMM" : "EEE d MMM yyyy").string(from: date).capitalizedFirst
+        return formatter(sameYear ? "EEEdMMM" : "EEEdMMMyyyy").string(from: date).capitalizedFirst
     }
 
     var sections: [String] {
@@ -121,7 +127,7 @@ final class Store: ObservableObject {
 
     /// What a day file contains before anything is written to it.
     func newDayContent(_ key: String) -> String {
-        let date = formatter("EEEE d MMMM yyyy").string(from: keyFormatter.date(from: key) ?? Date())
+        let date = title(for: key)
         let template = fm.fileExists(atPath: templateURL.path) ? read(templateURL) : Self.defaultTemplate
         return template.replacingOccurrences(of: "{{date}}", with: date)
     }
@@ -136,10 +142,9 @@ final class Store: ObservableObject {
         return url
     }
 
-    func addLog(_ entry: String, section: String) {
-        let url = ensureDay(todayKey)
+    func addLog(_ entry: String, section: String, day: String? = nil) {
+        let url = ensureDay(day ?? todayKey)
         write(Self.insert(entry, under: section, in: read(url)), to: url)
-        revision += 1
     }
 
     /// Adds "- entry" at the end of the `## section` block, creating the section if needed.
@@ -193,7 +198,7 @@ final class Store: ObservableObject {
         saveTodos()
     }
 
-    func setDone(_ id: UUID, _ done: Bool) {
+    func setDone(_ id: String, _ done: Bool) {
         guard let i = todos.firstIndex(where: { $0.id == id }) else { return }
         var item = todos.remove(at: i)
         item.done = done
@@ -204,13 +209,13 @@ final class Store: ObservableObject {
         saveTodos()
     }
 
-    func renameTodo(_ id: UUID, _ text: String) {
+    func renameTodo(_ id: String, _ text: String) {
         guard let i = todos.firstIndex(where: { $0.id == id }) else { return }
         todos[i].text = text
         saveTodos()
     }
 
-    func deleteTodo(_ id: UUID) {
+    func deleteTodo(_ id: String) {
         todos.removeAll { $0.id == id }
         saveTodos()
     }

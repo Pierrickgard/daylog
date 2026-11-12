@@ -1,12 +1,13 @@
 # Daylog
 
-A tiny macOS app to log what you do during the day and keep a to-do list, without switching apps.
+A tiny macOS app to log what you do during the day, and keep a to-do list, without leaving what you're working on.
 
-Press a global shortcut (default **⌃⌥N**), pick **Daily** or **To-do**, type a line, hit **↩**. That's it.
-At the end of the day, open Daylog and everything you did is there, one note per day.
+Press a global shortcut (default **⌃⌥N**, that is Control + Option + N) from any app, pick **Daily** or **To-do**,
+type one line and hit **Return**. At the end of the day, open Daylog: everything you did is there, one note per day,
+sorted by section.
 
-Everything is stored as plain Markdown, so you can also read and edit your notes with any editor
-(Obsidian, VS Code, iA Writer…), sync them with iCloud Drive or put them in git.
+Your notes are plain Markdown files in a folder you choose, so you can also read them with any editor
+(Obsidian, VS Code, iA Writer…), sync them with iCloud Drive or keep them in git.
 
 ```
 ~/Documents/Daylog/
@@ -19,41 +20,67 @@ Everything is stored as plain Markdown, so you can also read and edit your notes
 
 ## Features
 
-- **Quick entry popup** from anywhere with a global shortcut (configurable, no accessibility permission needed).
-- **Daily notes**: each entry goes under a section of today's note (`## Section`). New days are created from
-  `template-daily.md`; its `## ` headings are the sections offered in the popup.
-- **To-do list**: add, check, rename (double-click), delete, clear done items. Stored as `- [ ]` / `- [x]` lines in `todo.md`.
-- **History**: browse and edit previous days.
-- Lives in the menu bar; the Dock icon only shows while the main window is open.
-- Optional launch at login.
-
-The UI is in French for now.
+- **Quick log popup** from anywhere, with a configurable global shortcut (no accessibility permission needed).
+- **Daily notes**: each entry goes under a section of today's note. New days start from `template-daily.md`;
+  its `## ` headings are the sections offered in the popup, so you organise your days the way you want
+  (projects, clients, apps…).
+- **To-do list**: add, check, edit (double-click), delete, clear done items. Stored as `- [ ]` / `- [x]` lines in `todo.md`.
+- **History**: browse and edit previous days, or edit the raw Markdown of any day.
+- Light and dark themes, following the system. English and French.
+- Native and light: a small Swift app with a web-based UI (WKWebView), no Electron.
 
 ## Keyboard
 
 | Where | Keys | Action |
 | --- | --- | --- |
-| Anywhere | ⌃⌥N | Open the quick entry popup |
-| Popup | ⌘1 / ⌘2 | Daily / To-do |
-| Popup | ↩ / esc | Add / close |
+| Anywhere | ⌃⌥N | Open the quick log (change it in Settings) |
+| Quick log | ⌘1 / ⌘2 | Daily / To-do |
+| Quick log | Tab / Shift-Tab | Next / previous section |
+| Quick log | Return / Esc | Add / close |
+| Main window | ⌘1 / ⌘2 / ⌘, | Today / To-do / Settings |
 
 ## Install
+
+Download `Daylog.zip` from the [latest release](../../releases/latest), unzip it and move `Daylog.app` to `/Applications`.
+
+The app is not notarized by Apple, so the first launch is blocked. Right-click the app → **Open**, or run:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/Daylog.app
+```
+
+## Build from source
 
 Requires macOS 14+ and the Xcode command line tools (`xcode-select --install`).
 
 ```sh
-git clone <repo-url> daylog && cd daylog
-./scripts/build-app.sh install   # builds and copies Daylog.app to /Applications
-open /Applications/Daylog.app
+git clone https://github.com/<you>/daylog.git && cd daylog
+./scripts/build-app.sh install   # builds build/Daylog.app and copies it to /Applications
 ```
 
-`./scripts/build-app.sh` alone only builds `build/Daylog.app`. The app is ad-hoc signed, not notarized.
+`swift run` also works for development: the UI is then loaded straight from `Web/`.
+
+## How it's built
+
+```
+Sources/Daylog/   Swift: app lifecycle, global shortcut, windows, Markdown storage
+  Store.swift       reads and writes the Markdown files
+  Bridge.swift      the API the web UI calls (window.webkit.messageHandlers.daylog)
+  Windows.swift     main window and quick log panel
+Web/              the UI: plain HTML, CSS and JavaScript, no build step
+  index.html, app.js     main window
+  quick.html, quick.js   quick log popup
+  common.js              bridge helper, translations
+scripts/          app bundle and icon
+```
+
+Contributions are welcome: open an issue first for anything bigger than a fix.
 
 ## Notes
 
 - `todo.md` is rewritten by the app: only `- [ ]` / `- [x]` lines are kept.
-- Day files are only created once something is written in them, so empty days don't clutter the history.
+- A day file is only created once something is written in it, so empty days don't show up in the history.
 
 ## License
 
-MIT
+MIT. Fonts: IBM Plex, SIL Open Font License (`Web/fonts/LICENSE-OFL.txt`).
