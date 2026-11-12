@@ -26,7 +26,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Launched at login or through a daylog:// link: stay in the background. Launched by hand: show the window.
         let launchedAtLogin = NSAppleEventManager.shared().currentAppleEvent?
             .paramDescriptor(forKeyword: keyAELaunchedAsLogInItem) != nil
-        if UserDefaults.standard.bool(forKey: "showQuickLogAtLaunch") { // used for the README screenshots
+        // Development helpers (launch arguments): -page todo|settings|template opens that page,
+        // -showQuickLogAtLaunch YES opens the quick log. Used for the README screenshots.
+        if let page = UserDefaults.standard.string(forKey: "page") {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.mainWindow.webView.evaluateJavaScript("window.daylogGo && window.daylogGo(\(Self.jsString(page)))")
+            }
+        }
+        if UserDefaults.standard.bool(forKey: "showQuickLogAtLaunch") {
             openedByURL = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { self.quickEntry.show() }
         }
@@ -64,6 +71,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func notifyMainWindow() { mainWindow.refresh() }
+
+    private static func jsString(_ s: String) -> String {
+        let data = try? JSONSerialization.data(withJSONObject: [s])
+        return String(data: data ?? Data("[\"\"]".utf8), encoding: .utf8).map { String($0.dropFirst().dropLast()) } ?? "\"\""
+    }
 
     /// Light, dark or the system's: set on the whole app, so windows and web views (prefers-color-scheme) follow.
     func applyTheme() {

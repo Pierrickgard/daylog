@@ -17,7 +17,10 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshot.png" width="760" alt="Daylog main window">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/today-dark.png">
+    <img src="docs/today-light.png" width="760" alt="Today's note in Daylog, sorted by section">
+  </picture>
 </p>
 
 ## Why
@@ -27,21 +30,41 @@ press a shortcut from any app, type one line, hit Return, and you're back where 
 Daylog and your day is there, sorted by section.
 
 <p align="center">
-  <img src="docs/quick-log.png" width="560" alt="Quick log popup">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/quick-log-dark.png">
+    <img src="docs/quick-log-light.png" width="560" alt="The quick log popup">
+  </picture>
 </p>
 
 ## Features
 
 - **Quick log from anywhere**: a global shortcut (default **⌃⌥N**, Control + Option + N) opens a small popup
-  over the app you're in. Pick **Daily** or **To-do**, type, Return.
+  over the app you're in, without bringing Daylog's window forward. Pick **Daily** or **To-do**, pick a section,
+  type, Return.
 - **One note per day**: each line goes under a section of today's note. Sections come from your template,
-  so you organise days your way (projects, clients, apps…).
-- **To-do list**: add, check, edit, delete, clear done items.
-- **History**: browse past days, edit them, or edit the raw Markdown.
+  so you organise days your way (projects, clients, apps…). Add, edit or delete lines right in the day view,
+  or edit the raw Markdown.
+- **To-do list**: add, check, edit (double-click), delete, clear done items.
+- **History by month**: past days are grouped by month and year; older months fold away.
 - **Plain Markdown files** in a folder you choose: open them in Obsidian, VS Code or any editor, sync them with
   iCloud Drive, keep them in git.
+- **Light, dark or system theme**, English and French.
+- **Signed automatic updates**, verified before anything is installed.
 - **Light and native**: a small Swift app with a web UI (WKWebView), no Electron, no account, no tracking.
-- English and French, light and dark themes.
+  It lives in the menu bar and the Dock.
+
+<table>
+  <tr>
+    <td width="50%"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/todo-dark.png">
+    <img src="docs/todo-light.png" width="380" alt="The to-do list">
+  </picture></td>
+    <td width="50%"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/settings-dark.png">
+    <img src="docs/settings-light.png" width="380" alt="Settings: theme, shortcut, notes folder, open at login, updates">
+  </picture></td>
+  </tr>
+</table>
 
 ## Install
 
@@ -53,7 +76,8 @@ Daylog and your day is there, sorted by section.
    xattr -dr com.apple.quarantine /Applications/Daylog.app
    ```
 
-Then turn on **Settings → Open at login** so the shortcut is always available.
+Then turn on **Settings → Open at login** so the shortcut is always available. Close the window with ⌘W during the day:
+Daylog keeps running in the menu bar, and you open it again from the Dock or the menu bar icon.
 
 ### Updates
 

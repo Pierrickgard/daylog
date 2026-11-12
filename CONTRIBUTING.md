@@ -30,6 +30,9 @@ Tip: to try things without touching your own notes, point the app at a scratch f
 .build/debug/Daylog -folderPath /tmp/daylog-test
 ```
 
+Other launch arguments help when working on one screen: `-page todo` (or `settings`, `template`),
+`-showQuickLogAtLaunch YES`, `-theme light` / `-theme dark`, `-AppleLanguages "(en)"`.
+
 ## Pull requests
 
 - Keep them focused: one fix or feature per PR.
