@@ -222,6 +222,15 @@ li.todo.done .text { color: var(--muted); text-decoration: line-through; text-de
 code.path { display: inline-block; margin-top: 6px; font-size: 12px; }
 .error { color: var(--danger); font-size: 12.5px; margin: 6px 0 0; }
 .error:empty { display: none; }
+.ok { color: var(--accent); font-size: 12.5px; margin: 6px 0 0; }
+.primary.small { padding: 3px 10px; font-size: 12.5px; }
+.primary:disabled, .ghost:disabled { opacity: 0.6; cursor: default; }
+
+.update-banner {
+  margin: 8px 0; padding: 10px; border-radius: 8px;
+  background: var(--accent-soft); color: var(--text); font-size: 13px;
+}
+.update-title { font-weight: 500; margin-bottom: 6px; color: var(--accent); }
 .about { color: var(--faint); font-size: 12.5px; margin-top: 18px; }
 
 .switch { position: relative; width: 34px; height: 20px; display: inline-block; }

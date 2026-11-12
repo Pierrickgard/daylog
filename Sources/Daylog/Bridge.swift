@@ -112,8 +112,22 @@ final class Bridge: NSObject, WKScriptMessageHandlerWithReply {
                 reply(["ok": false, "error": error.localizedDescription])
             }
 
+        case "checkUpdate":
+            Updater.shared.check(); reply(true)
+        case "installUpdate":
+            Updater.shared.install(); reply(true)
+        case "setCheckForUpdates":
+            Preferences.checkForUpdates = a["on"] as? Bool ?? true
+            if Preferences.checkForUpdates { Updater.shared.check(manual: false) }
+            reply(true)
+        case "openReleases":
+            NSWorkspace.shared.open(Updater.releasesPage); reply(true)
+
         case "openURL":
-            if let url = URL(string: str("url")) { NSWorkspace.shared.open(url) }
+            // Only web links: notes may come from a synced folder, never let them open files or other apps.
+            if let url = URL(string: str("url")), ["http", "https"].contains(url.scheme?.lowercased()) {
+                NSWorkspace.shared.open(url)
+            }
             reply(true)
 
         default:
@@ -139,7 +153,20 @@ final class Bridge: NSObject, WKScriptMessageHandlerWithReply {
             "folder": Preferences.folderPath,
             "launchAtLogin": SMAppService.mainApp.status == .enabled,
             "welcome": !Preferences.welcomeDismissed,
+            "checkForUpdates": Preferences.checkForUpdates,
+            "update": updateState(),
         ]
+    }
+
+    private func updateState() -> [String: Any] {
+        switch Updater.shared.status {
+        case .idle: return ["status": "idle"]
+        case .checking: return ["status": "checking"]
+        case .upToDate: return ["status": "upToDate"]
+        case .installing: return ["status": "installing"]
+        case .available(let r): return ["status": "available", "version": r.version]
+        case .failed(let message): return ["status": "failed", "error": message]
+        }
     }
 
     /// Captures the next key combination pressed in the app (esc cancels).

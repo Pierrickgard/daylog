@@ -40,7 +40,7 @@ Daylog and your day is there, sorted by section.
 - **History**: browse past days, edit them, or edit the raw Markdown.
 - **Plain Markdown files** in a folder you choose: open them in Obsidian, VS Code or any editor, sync them with
   iCloud Drive, keep them in git.
-- **Light and native**: a small Swift app with a web UI (WKWebView), no Electron, no account, no network.
+- **Light and native**: a small Swift app with a web UI (WKWebView), no Electron, no account, no tracking.
 - English and French, light and dark themes.
 
 ## Install
@@ -54,6 +54,12 @@ Daylog and your day is there, sorted by section.
    ```
 
 Then turn on **Settings → Open at login** so the shortcut is always available.
+
+### Updates
+
+Daylog checks for new versions once a day and shows **Update available** in the sidebar; one click installs it.
+Updates are signed with a key that never leaves the maintainer's Mac, and verified before anything is installed
+(see [SECURITY.md](SECURITY.md)). You can turn the check off in Settings.
 
 ## How it works
 

@@ -47,6 +47,7 @@ function renderSidebar() {
       navItem('todo', t('todo'), 'todo', open || null)),
     h('div.group', {}, t('history')),
     h('nav.days', {}, past.length ? historyByMonth(past) : h('p.empty-hint', {}, t('noHistory'))),
+    updateBanner(),
     h('div.sidebar-footer', {},
       h('button.quick-btn', { onclick: () => call('openQuickEntry') },
         h('span', {}, t('quickLog')), kbd(state.shortcut)),
@@ -94,6 +95,17 @@ function historyByMonth(days) {
       open ? list.map((d) => h('button.nav.day' + (page === 'day:' + d.key ? '.active' : ''),
         { onclick: () => go('day:' + d.key), title: d.title }, dayLabel(d.key))) : null);
   });
+}
+
+function updateBanner() {
+  const u = state.update;
+  if (u.status !== 'available' && u.status !== 'installing') return h('span');
+  return h('div.update-banner', {},
+    h('div.update-title', {}, t('updateAvailable', u.version || '')),
+    h('div.actions', {},
+      h('button.primary.small', { disabled: u.status === 'installing', onclick: () => call('installUpdate') },
+        u.status === 'installing' ? t('installing') : t('install')),
+      h('button.link', { onclick: () => call('openReleases') }, t('releaseNotes'))));
 }
 
 // ---------- Pages ----------
@@ -316,8 +328,33 @@ function renderSettings() {
         [h('button.ghost', { onclick: () => call('reveal', { key: '' }) }, t('openFolder')),
          h('button.ghost', { onclick: async () => { state = await call('chooseFolder'); refresh(); } }, t('change'))],
         h('code.path', {}, state.folder)),
-      setting(t('launchAtLogin'), t('launchHelp'), h('label.switch', {}, loginToggle, h('span')), loginError)),
+      setting(t('launchAtLogin'), t('launchHelp'), h('label.switch', {}, loginToggle, h('span')), loginError),
+      setting(t('updates'), t('updatesHelp'),
+        [updateButton(), h('label.switch', {}, updatesToggle(), h('span'))],
+        updateStatus())),
     h('p.about', {}, t('aboutBody', state.version))));
+}
+
+function updatesToggle() {
+  const input = h('input', { type: 'checkbox', checked: state.checkForUpdates });
+  input.addEventListener('change', async () => { await call('setCheckForUpdates', { on: input.checked }); refresh(); });
+  return input;
+}
+
+function updateButton() {
+  const u = state.update;
+  if (u.status === 'available') return h('button.primary.small', { onclick: () => call('installUpdate') }, t('install'));
+  return h('button.ghost', { disabled: u.status === 'checking' || u.status === 'installing',
+    onclick: () => call('checkUpdate') }, u.status === 'checking' ? t('checking') : t('checkNow'));
+}
+
+function updateStatus() {
+  const u = state.update;
+  if (u.status === 'upToDate') return h('p.ok', {}, t('upToDate'));
+  if (u.status === 'available') return h('p.ok', {}, t('updateAvailable', u.version));
+  if (u.status === 'installing') return h('p.ok', {}, t('installing'));
+  if (u.status === 'failed') return h('p.error', {}, u.error);
+  return null;
 }
 
 // ---------- Keyboard ----------

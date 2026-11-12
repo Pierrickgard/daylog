@@ -44,4 +44,14 @@ enum Preferences {
         get { defaults.string(forKey: "lastSection") ?? "" }
         set { defaults.set(newValue, forKey: "lastSection") }
     }
+
+    static var checkForUpdates: Bool {
+        get { defaults.object(forKey: "checkForUpdates") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "checkForUpdates") }
+    }
+
+    static var lastUpdateCheck: Date? {
+        get { defaults.object(forKey: "lastUpdateCheck") as? Date }
+        set { defaults.set(newValue, forKey: "lastUpdateCheck") }
+    }
 }

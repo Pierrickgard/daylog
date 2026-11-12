@@ -16,11 +16,32 @@ enum WebUI {
     static func makeWebView(page: String, bridge: Bridge) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.userContentController.addScriptMessageHandler(bridge, contentWorld: .page, name: "daylog")
+        config.websiteDataStore = .nonPersistent()
         let webView = WKWebView(frame: .zero, configuration: config)
+        webView.navigationDelegate = NavigationGuard.shared
         webView.setValue(false, forKey: "drawsBackground")
         webView.allowsMagnification = false
         webView.loadFileURL(folder.appendingPathComponent(page), allowingReadAccessTo: folder)
         return webView
+    }
+}
+
+/// The web views only ever show the app's own pages: any other navigation is refused, so no remote page can
+/// reach the native bridge. Clicked http(s) links open in the default browser instead.
+final class NavigationGuard: NSObject, WKNavigationDelegate {
+    static let shared = NavigationGuard()
+
+    func webView(_ webView: WKWebView, decidePolicyFor action: WKNavigationAction,
+                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        guard let url = action.request.url else { return decisionHandler(.cancel) }
+        let root = WebUI.folder.standardizedFileURL.path + "/"
+        if url.isFileURL && url.standardizedFileURL.path.hasPrefix(root) && action.targetFrame?.isMainFrame == true {
+            return decisionHandler(.allow)
+        }
+        if action.navigationType == .linkActivated, ["http", "https"].contains(url.scheme?.lowercased()) {
+            NSWorkspace.shared.open(url)
+        }
+        decisionHandler(.cancel)
     }
 }
 

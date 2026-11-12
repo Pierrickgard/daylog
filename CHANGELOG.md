@@ -5,6 +5,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+- Signed automatic updates: daily check, "Update available" in the sidebar, one-click install. Can be turned off.
+
+### Security
+- Web views can only show the app's own pages, with a strict Content Security Policy.
+- The bridge only opens http(s) links.
+
 ### Changed
 - History is grouped by month, with the year; older months are collapsed.
 

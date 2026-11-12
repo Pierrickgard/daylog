@@ -23,6 +23,9 @@ const STRINGS = {
     about: 'About', aboutBody: 'Daylog {0} · open source, MIT license.',
     daily: 'Daily', whatDidYouDo: 'What did you just do?', whatToDo: 'What needs doing?',
     hintAdd: 'add', hintSection: 'section', hintClose: 'close', added: 'Added',
+    updates: 'Updates', updatesHelp: 'Checks GitHub once a day. Updates are signed and verified before anything is installed.',
+    checkNow: 'Check now', checking: 'Checking…', upToDate: 'You have the latest version.',
+    updateAvailable: 'Version {0} is available', install: 'Install', installing: 'Installing…', releaseNotes: 'What\'s new',
     keyNames: { '⌃': 'Control', '⌥': 'Option', '⇧': 'Shift', '⌘': 'Command' },
   },
   fr: {
@@ -44,6 +47,9 @@ const STRINGS = {
     about: 'À propos', aboutBody: 'Daylog {0} · open source, licence MIT.',
     daily: 'Daily', whatDidYouDo: 'Qu\'est-ce que tu viens de faire ?', whatToDo: 'Qu\'est-ce qu\'il reste à faire ?',
     hintAdd: 'ajouter', hintSection: 'section', hintClose: 'fermer', added: 'Ajouté',
+    updates: 'Mises à jour', updatesHelp: 'Vérifie sur GitHub une fois par jour. Les mises à jour sont signées et vérifiées avant toute installation.',
+    checkNow: 'Vérifier', checking: 'Vérification…', upToDate: 'Tu as la dernière version.',
+    updateAvailable: 'La version {0} est disponible', install: 'Installer', installing: 'Installation…', releaseNotes: 'Nouveautés',
     keyNames: { '⌃': 'Contrôle', '⌥': 'Option', '⇧': 'Maj', '⌘': 'Commande' },
   },
 };

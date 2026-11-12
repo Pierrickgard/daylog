@@ -19,6 +19,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         registerHotKey()
         _ = quickEntry // load the popup's page now so it opens instantly
 
+        Updater.shared.onChange = { [weak self] in self?.notifyMainWindow() }
+        Updater.shared.startAutomaticChecks()
+
         // Launched at login or through a daylog:// link: stay in the background. Launched by hand: show the window.
         let launchedAtLogin = NSAppleEventManager.shared().currentAppleEvent?
             .paramDescriptor(forKeyword: keyAELaunchedAsLogInItem) != nil
