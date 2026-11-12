@@ -9,6 +9,8 @@ All notable changes to this project are documented here. The format follows
 - Signed automatic updates: daily check, "Update available" in the sidebar, one-click install. Can be turned off.
 
 ### Security
+- No local paths in the compiled app; release zips carry no extended attributes.
+- The update check sends a plain `Daylog` User-Agent (no app or macOS version).
 - Web views can only show the app's own pages, with a strict Content Security Policy.
 - The bridge only opens http(s) links.
 

@@ -22,7 +22,7 @@ PUBLIC_KEY=$(sed -n 's/.*static let publicKey = "\(.*\)".*/\1/p' Sources/Daylog/
 VERSION="$VERSION" ./scripts/build-app.sh
 OUT=build/release
 rm -rf "$OUT" && mkdir -p "$OUT"
-ditto -c -k --keepParent build/Daylog.app "$OUT/Daylog.zip"
+ditto -c -k --norsrc --noextattr --keepParent build/Daylog.app "$OUT/Daylog.zip"
 
 SHA=$(shasum -a 256 "$OUT/Daylog.zip" | cut -d' ' -f1)
 SIZE=$(stat -f %z "$OUT/Daylog.zip")

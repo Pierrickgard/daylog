@@ -6,7 +6,8 @@ cd "$(dirname "$0")/.."
 VERSION=${VERSION:-0.1.0}
 APP=build/Daylog.app
 
-swift build -c release
+# Map the checkout path to "." so no local path (user name, folders) ends up in the binary.
+swift build -c release -Xswiftc -file-prefix-map -Xswiftc "$PWD=."
 mkdir -p build
 [ -f build/AppIcon.icns ] || swift scripts/make-icon.swift build/AppIcon.icns
 

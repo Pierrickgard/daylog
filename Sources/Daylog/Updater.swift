@@ -45,6 +45,8 @@ final class Updater {
         config.timeoutIntervalForRequest = 30
         config.httpCookieStorage = nil
         config.urlCache = nil
+        // Only the app name: no app version, macOS version or device details are sent.
+        config.httpAdditionalHeaders = ["User-Agent": "Daylog"]
         return URLSession(configuration: config)
     }()
 

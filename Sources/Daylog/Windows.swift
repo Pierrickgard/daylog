@@ -2,15 +2,14 @@ import AppKit
 import WebKit
 
 enum WebUI {
-    /// Web assets: `Contents/Resources/web` in the app bundle, or the repo's `Web/` folder when run with `swift run`.
+    /// Web assets: `Contents/Resources/web` in the app bundle, or `Web/` in the current directory when run with
+    /// `swift run` from the repository (no source path is compiled into the binary).
     static var folder: URL {
         if let bundled = Bundle.main.resourceURL?.appendingPathComponent("web"),
            FileManager.default.fileExists(atPath: bundled.path) {
             return bundled
         }
-        return URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Web")
+        return URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent("Web")
     }
 
     static func makeWebView(page: String, bridge: Bridge) -> WKWebView {
