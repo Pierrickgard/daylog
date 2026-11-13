@@ -79,7 +79,7 @@ Daylog and your day is there, sorted by section.
    ```
 
 Then turn on **Settings → Open at login** so the shortcut is always available. Daylog lives in the menu bar:
-closing the window (⌘W or ⌘Q) keeps it running there, and its Dock icon only shows while the window is open.
+closing the window (⌘W, ⌘Q or Quit in the Dock) keeps it running there, and its Dock icon only shows while the window is open.
 Quit it for real from the menu bar icon.
 
 ### Updates

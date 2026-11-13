@@ -67,6 +67,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
+    /// "Quit" from the Dock icon (or the ⌘Tab switcher, which belongs to the Dock) only closes the window:
+    /// Daylog stays in the menu bar. Quitting from the menu bar icon, logging out or shutting down still quits.
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard let event = NSAppleEventManager.shared().currentAppleEvent,
+              event.eventClass == kCoreEventClass, event.eventID == kAEQuitApplication,
+              event.paramDescriptor(forKeyword: kAEQuitReason) == nil,
+              event.attributeDescriptor(forKeyword: kAEQuitReason) == nil,
+              let senderPID = event.attributeDescriptor(forKeyword: keySenderPIDAttr)?.int32Value,
+              NSRunningApplication(processIdentifier: pid_t(senderPID))?.bundleIdentifier == "com.apple.dock"
+        else { return .terminateNow }
+        mainWindow.close()
+        return .terminateCancel
+    }
+
     func registerHotKey() {
         hotKeyRegistered = HotKey.shared.registerFromPreferences()
         quickEntryItem?.title = L10n.t("Quick Log", "Ajout rapide") + "  \(Preferences.hotKeyLabel)"
