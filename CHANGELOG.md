@@ -15,6 +15,8 @@ All notable changes to this project are documented here. The format follows
 - The bridge only opens http(s) links.
 
 ### Changed
+- Daylog lives in the menu bar: the Dock icon only shows while the window is open, and ⌘Q closes the window
+  without stopping the quick log. "Quit Daylog Completely" is in the app menu and the menu bar icon's menu.
 - Theme setting: System, Light or Dark.
 - New settings icon, and a menu bar icon matching the app icon.
 - History is grouped by month, with the year; older months are collapsed.

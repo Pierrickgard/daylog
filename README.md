@@ -53,7 +53,7 @@ Daylog and your day is there, sorted by section.
 - **Light, dark or system theme**, English and French.
 - **Signed automatic updates**, verified before anything is installed.
 - **Light and native**: a small Swift app with a web UI (WKWebView), no Electron, no account, no tracking.
-  It lives in the menu bar and the Dock.
+  It lives in the menu bar, with a Dock icon only while its window is open.
 
 <table>
   <tr>
@@ -78,8 +78,9 @@ Daylog and your day is there, sorted by section.
    xattr -dr com.apple.quarantine /Applications/Daylog.app
    ```
 
-Then turn on **Settings → Open at login** so the shortcut is always available. Close the window with ⌘W during the day:
-Daylog keeps running in the menu bar, and you open it again from the Dock or the menu bar icon.
+Then turn on **Settings → Open at login** so the shortcut is always available. Daylog lives in the menu bar:
+closing the window (⌘W or ⌘Q) keeps it running there, and its Dock icon only shows while the window is open.
+Quit it for real from the menu bar icon.
 
 ### Updates
 

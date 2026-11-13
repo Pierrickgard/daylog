@@ -10,7 +10,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         bridge.app = self
-        NSApp.setActivationPolicy(.regular)
+        // A menu bar app: the Dock icon only shows while the main window is open.
+        NSApp.setActivationPolicy(.accessory)
+        mainWindow.onClose = { NSApp.setActivationPolicy(.accessory) }
         applyTheme()
         NSApp.mainMenu = makeMainMenu()
         Store.shared.bootstrap()
@@ -90,6 +92,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func showMainWindow() { mainWindow.show() }
 
+    /// ⌘Q closes the window but keeps Daylog in the menu bar, so the shortcut keeps working.
+    /// Quitting for real is in the menu bar icon's menu.
+    @objc func closeToMenuBar() { mainWindow.close() }
+
     @objc func showSettings() {
         mainWindow.show()
         mainWindow.webView.evaluateJavaScript("window.daylogGo && window.daylogGo('settings')")
@@ -150,7 +156,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         appMenu.addItem(withTitle: L10n.t("Settings…", "Réglages…"), action: #selector(showSettings), keyEquivalent: ",").target = self
         appMenu.addItem(.separator())
         appMenu.addItem(withTitle: L10n.t("Hide Daylog", "Masquer Daylog"), action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
-        appMenu.addItem(withTitle: L10n.t("Quit Daylog", "Quitter Daylog"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        appMenu.addItem(withTitle: L10n.t("Close Daylog (keeps running in the menu bar)", "Fermer Daylog (reste dans la barre des menus)"),
+                        action: #selector(closeToMenuBar), keyEquivalent: "q").target = self
+        appMenu.addItem(withTitle: L10n.t("Quit Daylog Completely", "Quitter complètement Daylog"),
+                        action: #selector(NSApplication.terminate(_:)), keyEquivalent: "")
         main.addItem(withTitle: "Daylog", action: nil, keyEquivalent: "").submenu = appMenu
 
         let fileMenu = NSMenu(title: L10n.t("File", "Fichier"))

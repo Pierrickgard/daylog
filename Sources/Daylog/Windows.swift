@@ -92,11 +92,26 @@ final class MainWindowController: NSObject, NSWindowDelegate {
         window.delegate = self
     }
 
+    /// Called when the window closes: the app then goes back to living in the menu bar only.
+    var onClose: (() -> Void)?
+
     func show() {
-        NSApp.activate(ignoringOtherApps: true)
-        window.makeKeyAndOrderFront(nil)
-        window.orderFrontRegardless()
+        // Daylog only has a Dock icon while its window is open (like a menu bar app the rest of the time).
+        NSApp.setActivationPolicy(.regular)
+        DispatchQueue.main.async {
+            NSApp.activate(ignoringOtherApps: true)
+            self.window.makeKeyAndOrderFront(nil)
+            self.window.orderFrontRegardless()
+        }
         refresh()
+    }
+
+    func close() {
+        window.performClose(nil)
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        onClose?()
     }
 
     func refresh() {
