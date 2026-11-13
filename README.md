@@ -13,6 +13,8 @@
   <a href="https://github.com/Pierrickgard/daylog/releases/latest"><img src="https://img.shields.io/github/v/release/Pierrickgard/daylog?label=download" alt="Latest release"></a>
   <a href="https://github.com/Pierrickgard/daylog/actions/workflows/build.yml"><img src="https://github.com/Pierrickgard/daylog/actions/workflows/build.yml/badge.svg" alt="Build"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-lightgrey" alt="macOS 14+">
+  <a href="https://github.com/Pierrickgard/daylog/actions/workflows/codeql.yml"><img src="https://github.com/Pierrickgard/daylog/actions/workflows/codeql.yml/badge.svg" alt="CodeQL"></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/Pierrickgard/daylog"><img src="https://api.scorecard.dev/projects/github.com/Pierrickgard/daylog/badge" alt="OpenSSF Scorecard"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/Pierrickgard/daylog" alt="MIT license"></a>
 </p>
 

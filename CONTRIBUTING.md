@@ -35,6 +35,9 @@ Other launch arguments help when working on one screen: `-page todo` (or `settin
 
 ## Pull requests
 
+`main` is protected: changes go through a pull request, the build and CodeQL checks must pass, and the maintainer
+reviews every PR. Fork the repo, work on a branch, and open the PR against `main`; it is squash-merged.
+
 - Keep them focused: one fix or feature per PR.
 - Match the existing style (4 spaces in Swift, 2 in JS/CSS, no new dependencies without discussion).
 - Make sure `./scripts/build-app.sh` succeeds and describe how you tested the change.
